@@ -32,6 +32,10 @@ def downsample(orig_img, downscaling_factor):
   size = tuple(x//downscaling_factor for x in orig_img.size)
   return orig_img.resize(size, resample = Image.Resampling.LANCZOS)
 
+def crop(image, new_size):
+    bbox = [0, 0, new_size[0], new_size[1]]
+    return image.crop(bbox)
+
 def plot(imgs, row_title=None, **imshow_kwargs):
     if not isinstance(imgs[0], list):
         # Make a 2d grid even if there's just 1 row
