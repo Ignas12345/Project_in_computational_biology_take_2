@@ -58,8 +58,6 @@ def skip(
             skip.add(conv(input_depth, num_channels_skip[i], filter_skip_size, bias=need_bias, pad=pad))
             skip.add(bn(num_channels_skip[i]))
             skip.add(act(act_fun))
-            
-        # skip.add(Concat(2, GenNoise(nums_noise[i]), skip_part))
 
         deeper.add(conv(input_depth, num_channels_down[i], filter_size_down[i], 2, bias=need_bias, pad=pad, downsample_mode=downsample_mode[i]))
         deeper.add(bn(num_channels_down[i]))
