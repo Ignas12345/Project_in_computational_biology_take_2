@@ -108,3 +108,30 @@ def optimize_vanilla(model, input_img, target_img, n_iterations, lr = 0.001, sav
       output_img = tensor_to_image(output)
       output_img.save('DIP_images/High_resolution_iteration_' + str(iteration) + '.jpg')
       plot([target_img, output_img], cmap = 'gray')
+
+from DIP_model.downsampler import Downsampler
+def optimize_upscaling(model, input_img, target_img, n_iterations, lr = 0.001, save_every_n_iters = 25, upscaling_factor = upscaling_factor, dtype = torch.FloatTensor):
+      
+  input_tensor = image_to_tensor(input_img).type(dtype)
+  target_tensor = image_to_tensor(target_img).type(dtype)
+  optimizer = optim.Adam(model.parameters(), lr = lr)
+  mse = nn.MSELoss().type(dtype) 
+  downsampler = Downsampler(n_planes = 1, factor = upscaling_factor, kernel_type= 'lanczos2', preserve_size=True)
+
+  for iteration in range(n_iterations+1):
+
+    model.train()
+
+    optimizer.zero_grad()
+    output = model(input_tensor)
+    loss = mse(downsampler(output), target_tensor)
+    loss.backward()
+    optimizer.step()
+    
+    print(f'iteration [{iteration}/{n_iterations}], Loss: {loss.item()}')
+
+    if iteration % save_every_n_iters == 0:
+    
+      output_img = tensor_to_image(output)
+      output_img.save('DIP_images/High_resolution_iteration_' + str(iteration) + '.jpg')
+      plot([target_img, output_img], cmap = 'gray')
