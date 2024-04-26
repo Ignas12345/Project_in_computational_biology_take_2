@@ -84,12 +84,12 @@ def plot(imgs, row_title=None, **imshow_kwargs):
     plt.tight_layout()
     plt.show()
 
-def optimize_vanilla(model, input_img, target_img, n_iterations, lr = 0.001, save_every_n_iters = 25):
+def optimize_vanilla(model, input_img, target_img, n_iterations, lr = 0.001, save_every_n_iters = 25, dtype = torch.FloatTensor):
       
-  input_tensor = image_to_tensor(input_img)
-  target_tensor = image_to_tensor(target_img)
+  input_tensor = image_to_tensor(input_img).type(dtype)
+  target_tensor = image_to_tensor(target_img).type(dtype)
   optimizer = optim.Adam(model.parameters(), lr = lr)
-  mse = nn.MSELoss()
+  mse = nn.MSELoss().type(dtype) 
 
   for iteration in range(n_iterations+1):
 
