@@ -112,13 +112,15 @@ def optimize_vanilla(model, input_img, target_img, n_iterations, lr = 0.001, sav
       output_img.save('DIP_images/High_resolution_iteration_' + str(iteration) + '.jpg')
       plot([target_img, output_img], cmap = 'gray')
 
-def optimize_upscaling(model, input_img, target_img, n_iterations, lr = 0.001, save_every_n_iters = 25, upscaling_factor = 1, dtype = torch.FloatTensor):
+def optimize_upscaling(model, input_img, target_img, n_iterations, lr = 0.001, save_every_n_iters = 25, upscaling_factor = 1, downsampler = None, dtype = torch.FloatTensor):
       
   input_tensor = image_to_tensor(input_img).type(dtype)
   target_tensor = image_to_tensor(target_img).type(dtype)
   optimizer = optim.Adam(model.parameters(), lr = lr)
-  mse = nn.MSELoss().type(dtype) 
-  downsampler = Downsampler(n_planes = 1, factor = upscaling_factor, kernel_type= 'lanczos2', preserve_size=True)
+  mse = nn.MSELoss().type(dtype)
+  
+  if downsampler == None:
+    downsampler = Downsampler(n_planes = 1, factor = upscaling_factor, kernel_type= 'lanczos2', preserve_size=True)
 
   for iteration in range(n_iterations+1):
 
