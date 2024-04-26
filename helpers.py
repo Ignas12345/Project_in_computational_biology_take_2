@@ -2,12 +2,15 @@ import matplotlib.pyplot as plt
 from PIL import Image, ImageFilter
 import numpy as np
 import torch
+import torch.optim as optim
+import torch.nn as nn
+
 from torchvision.transforms import v2
 from torchvision.transforms.v2 import functional as F
 from torchvision.utils import draw_bounding_boxes, draw_segmentation_masks
 from torchvision import tv_tensors
 
-def generate_noise(image, upscaling_factor, mean = 0, std_dev = 0.2):
+def generate_noise(image, upscaling_factor = 1, mean = 0, std_dev = 0.2):
   img_size = np.array(image).shape
   # next line taken from : https://stackoverflow.com/questions/1781970/multiplying-a-tuple-by-a-scalar
   img_size = tuple(i * upscaling_factor for i in img_size)
@@ -80,3 +83,26 @@ def plot(imgs, row_title=None, **imshow_kwargs):
 
     plt.tight_layout()
     plt.show()
+
+    def optimize_vanilla(model, input_img, target_img, n_iterations, lr = 0.001, save_every_n_iters = 25):
+      
+      input_tensor = tensor_to_image(input_img)
+      target_tensor = tensor_to_image(target_img)
+      optimizer = optim.Adam(model.parameters(), lr = lr)
+      mse = nn.MSELoss()
+
+      for iteration in range(n_iterations+1):
+          model.train()
+          optimizer.zero_grad()
+          output = model(input_tensor)
+
+          loss = mse(output, target_tensor)
+
+          loss.backward()
+          optimizer.step()
+          print(f'iteration [{iteration}/{n_iterations}], Loss: {loss.item()}')
+          if iteration % save_every_n_iters == 0:
+      
+            output_img = tensor_to_image(output)
+            output_img.save('DIP_images/High_resolution_iteration_' + str(iteration) + '.jpg')
+            plot([target_img, output_img], cmap = 'gray')
