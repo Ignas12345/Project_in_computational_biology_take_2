@@ -11,7 +11,7 @@ from torchvision.utils import draw_bounding_boxes, draw_segmentation_masks
 from torchvision import tv_tensors
 
 #this is used for some of the optimization loops
-from downsampler import Downsampler
+from .downsampler import Downsampler
 
 def generate_noise(image, upscaling_factor = 1, mean = 0, std_dev = 0.2):
   img_size = np.array(image).shape
