@@ -84,25 +84,27 @@ def plot(imgs, row_title=None, **imshow_kwargs):
     plt.tight_layout()
     plt.show()
 
-    def optimize_vanilla(model, input_img, target_img, n_iterations, lr = 0.001, save_every_n_iters = 25):
+def optimize_vanilla(model, input_img, target_img, n_iterations, lr = 0.001, save_every_n_iters = 25):
       
-      input_tensor = tensor_to_image(input_img)
-      target_tensor = tensor_to_image(target_img)
-      optimizer = optim.Adam(model.parameters(), lr = lr)
-      mse = nn.MSELoss()
+  input_tensor = tensor_to_image(input_img)
+  target_tensor = tensor_to_image(target_img)
+  optimizer = optim.Adam(model.parameters(), lr = lr)
+  mse = nn.MSELoss()
 
-      for iteration in range(n_iterations+1):
-          model.train()
-          optimizer.zero_grad()
-          output = model(input_tensor)
+  for iteration in range(n_iterations+1):
 
-          loss = mse(output, target_tensor)
+    model.train()
 
-          loss.backward()
-          optimizer.step()
-          print(f'iteration [{iteration}/{n_iterations}], Loss: {loss.item()}')
-          if iteration % save_every_n_iters == 0:
-      
-            output_img = tensor_to_image(output)
-            output_img.save('DIP_images/High_resolution_iteration_' + str(iteration) + '.jpg')
-            plot([target_img, output_img], cmap = 'gray')
+    optimizer.zero_grad()
+    output = model(input_tensor)
+    loss = mse(output, target_tensor)
+    loss.backward()
+    optimizer.step()
+    
+    print(f'iteration [{iteration}/{n_iterations}], Loss: {loss.item()}')
+
+    if iteration % save_every_n_iters == 0:
+    
+      output_img = tensor_to_image(output)
+      output_img.save('DIP_images/High_resolution_iteration_' + str(iteration) + '.jpg')
+      plot([target_img, output_img], cmap = 'gray')
