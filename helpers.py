@@ -86,8 +86,8 @@ def plot(imgs, row_title=None, **imshow_kwargs):
 
 def optimize_vanilla(model, input_img, target_img, n_iterations, lr = 0.001, save_every_n_iters = 25):
       
-  input_tensor = tensor_to_image(input_img)
-  target_tensor = tensor_to_image(target_img)
+  input_tensor = image_to_tensor(input_img)
+  target_tensor = image_to_tensor(target_img)
   optimizer = optim.Adam(model.parameters(), lr = lr)
   mse = nn.MSELoss()
 
