@@ -42,24 +42,6 @@ class Concat(nn.Module):
         return len(self._modules)
 
 
-class GenNoise(nn.Module):
-    def __init__(self, dim2):
-        super(GenNoise, self).__init__()
-        self.dim2 = dim2
-
-    def forward(self, input):
-        a = list(input.size())
-        a[1] = self.dim2
-        # print (input.data.type())
-
-        b = torch.zeros(a).type_as(input.data)
-        b.normal_()
-
-        x = torch.autograd.Variable(b)
-
-        return x
-
-
 class Swish(nn.Module):
     """
         https://arxiv.org/abs/1710.05941
