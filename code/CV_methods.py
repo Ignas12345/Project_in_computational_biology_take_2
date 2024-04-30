@@ -1,3 +1,4 @@
+import numpy as np
 import PIL
 from PIL import Image, ImageFilter
 from skimage.metrics import mean_squared_error
