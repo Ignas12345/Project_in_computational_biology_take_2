@@ -42,8 +42,8 @@ def crop(image, new_size):
     bbox = [0, 0, new_size[0], new_size[1]]
     return image.crop(bbox)
 
-def get_edges_with_edgenet(image, model, add_low_res = False, factor = None, save_img = True):
-  input_tensor = image_to_tensor(image)
+def get_edges_with_edgenet(image, model, add_low_res = False, factor = None, save_img = True, dtype = torch.FloatTensor):
+  input_tensor = image_to_tensor(image).type(dtype)
   edges_tensor = model(input_tensor).detach()
   edges_image = tensor_to_image(edges_tensor)
   # the following edge map can still be post processed with computer vision methods - again it's a bit of a game at this point
@@ -142,7 +142,7 @@ def optimize_upscaling(model, input_img, target_img, n_iterations, upscaling_fac
   mse = nn.MSELoss().type(dtype)
   
   if downsampler == None:
-    downsampler = Downsampler(n_planes = 1, factor = upscaling_factor, kernel_type= 'lanczos2', preserve_size=True)
+    downsampler = Downsampler(n_planes = 1, factor = upscaling_factor, kernel_type= 'lanczos2', preserve_size=True).type(dtype)
 
   for iteration in range(n_iterations+1):
 
@@ -171,7 +171,7 @@ def optimize_with_edges(model, input_img, target_img, edge_map_tensor, edgenet_m
   mse = nn.MSELoss().type(dtype)
   
   if downsampler == None:
-    downsampler = Downsampler(n_planes = 1, factor = upscaling_factor, kernel_type= 'lanczos2', preserve_size=True)
+    downsampler = Downsampler(n_planes = 1, factor = upscaling_factor, kernel_type= 'lanczos2', preserve_size=True).type(dtype)
 
   #here we start optimization
   if edgemap_is_HR == True:
